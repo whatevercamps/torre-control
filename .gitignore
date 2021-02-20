@@ -63,3 +63,6 @@ typings/
 
 # .env file with confidential information 👀
 .env
+
+# MAC 🙄
+.DS_Store

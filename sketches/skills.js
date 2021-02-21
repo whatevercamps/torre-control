@@ -45,7 +45,7 @@ const dataUtils = () => {
     })
       .then((response) => {
         if (response.status === 200) return response.json();
-        throw new Error("failed getting watson api response");
+        throw new Error("failed getting Torre api response");
       })
       .then((responseJson) => {
         let leftSkills = responseJson.aggregators.skill;

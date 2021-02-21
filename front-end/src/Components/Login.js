@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -13,9 +14,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     minWidth: "25%",
     maxWidth: "75%",
-    height: "5em",
+    height: "4.5em",
     borderRadius: "2.5em",
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    backgroundColor: "rgba(255, 255, 255, 0.95)",
   },
   input: {
     fontSize: "1.5em",
@@ -32,24 +33,25 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login() {
   const [input, setInput] = useState("");
-
   const classes = useStyles();
+  let history = useHistory();
+
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+
+    if (input.trim().length) {
+      history.push(input);
+    } else {
+      alert("please, provide a valid Torre username");
+    }
+  };
 
   return (
     <div
       className='Login'
       style={{ backgroundImage: "url(/Arlanda_Tower_at_night.jpg)" }}
     >
-      <Paper
-        component='form'
-        className={classes.root}
-        onSubmit={(evt) => {
-          if (input.split("").length) {
-            evt.preventDefault();
-            console.log(input);
-          }
-        }}
-      >
+      <Paper component='form' className={classes.root} onSubmit={handleSubmit}>
         <InputBase
           className={classes.input}
           onChange={(evt) => setInput(evt.target.value)}

@@ -47,10 +47,7 @@ export default function Login() {
   };
 
   return (
-    <div
-      className='Login'
-      style={{ backgroundImage: "url(/Arlanda_Tower_at_night.jpg)" }}
-    >
+    <div className='Login' style={{ backgroundImage: "url(/bg3.jpg)" }}>
       <Paper component='form' className={classes.root} onSubmit={handleSubmit}>
         <InputBase
           className={classes.input}

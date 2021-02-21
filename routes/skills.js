@@ -8,7 +8,7 @@ const torreUtils = require("../utils/torreUtils")();
 /* GET skills listing. */
 router.post("/of-people", function (req, res, next) {
   const strengths = req.body.strengths;
-
+  //TODO: Handle if strengths is null;
   if (strengths && strengths.length) {
     torreUtils
       .getSkillsOfPeopleAroundMe(strengths)
@@ -21,6 +21,7 @@ router.post("/of-people", function (req, res, next) {
 router.post("/of-oportunities", function (req, res, next) {
   const strengths = req.body.strengths;
 
+  //TODO: Handle if strengths is null;
   if (strengths && strengths.length) {
     torreUtils
       .getSkillsOfOportunitiesAroundMe(strengths)

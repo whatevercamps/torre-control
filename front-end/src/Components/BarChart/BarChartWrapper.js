@@ -11,9 +11,7 @@ export default function BarChartWrapper(props) {
   const ref = useRef();
 
   useEffect(() => {
-    console.log("parece que si");
     if (ref && ref.current && data) {
-      console.log("entramos");
       BarChart(data, ref.current);
     }
   }, [ref, data]);

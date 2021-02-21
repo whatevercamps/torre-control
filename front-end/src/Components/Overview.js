@@ -12,7 +12,7 @@ export default function Overview(props) {
   const { torreUsername } = props.match.params;
 
   /* state */
-  const [skills, setSkills] = useState(null);
+  const [mySkills, setMySkills] = useState(null);
   const [peopleAroundMeSkills, setPeopleAroundMeSkills] = useState(null);
 
   /* Functions */
@@ -30,7 +30,7 @@ export default function Overview(props) {
       })
       .then((torreResponse) => {
         if (torreResponse) {
-          setSkills(torreResponse);
+          setMySkills(torreResponse);
         } else {
           throw new Error("failed getting Torre skills from username");
         }
@@ -69,20 +69,20 @@ export default function Overview(props) {
 
   /* Effects */
   useEffect(() => {
-    if (torreUsername && !skills) {
+    if (torreUsername && !mySkills) {
       getTorreSkillsByUsername(torreUsername);
     }
-  }, [skills, torreUsername]);
+  }, [mySkills, torreUsername]);
 
   useEffect(() => {
-    if (skills) {
-      getPeopleAroundMeSkills(skills);
+    if (mySkills) {
+      getPeopleAroundMeSkills(mySkills);
     }
-  }, [skills]);
+  }, [mySkills]);
 
   return (
     <div className='Overview'>
-      <Container>
+      <Container fluid>
         <Row>
           <Col md={6}>
             <Card>
@@ -98,14 +98,14 @@ export default function Overview(props) {
             </Card>
           </Col>
           <Col md={6}>
-            <Card>
+            <Card className='dark'>
               <Card.Body>
                 <Card.Title>My skills</Card.Title>
                 <Card.Subtitle className='text-muted'>
                   Let's see what skills {torreUsername} already have
                 </Card.Subtitle>
                 <hr />
-                <MySkills skills={skills} />
+                <MySkills mySkills={mySkills} />
               </Card.Body>
             </Card>
           </Col>

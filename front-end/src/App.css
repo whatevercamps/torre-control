@@ -14,7 +14,7 @@ code {
 .Login {
   height: 100vh;
   width: 100vw;
-  background-position: center;
+  background-position: right 0% top 0%;
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
@@ -24,4 +24,9 @@ code {
 
 .LoginInput {
   max-width: 600px;
+}
+
+.card {
+  background-color: #36393e;
+  color: #fff;
 }

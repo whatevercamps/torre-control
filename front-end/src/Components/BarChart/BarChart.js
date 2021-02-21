@@ -1,11 +1,12 @@
-/* global d3 */
-const start = (data) => {
-  const margin = { top: 30, right: 30, bottom: 0, left: 100 };
+import * as d3 from "d3";
+
+export default function BarChart(data, target) {
+  const margin = { top: 30, right: 30, bottom: 0, left: 120 };
   const duration = 750;
   const barStep = 27;
-  const width = 900;
+  const width = target.offsetWidth;
 
-  const colors = d3["schemeSet3"];
+  const colors = d3["schemeAccent"];
 
   const yAxis = (g) =>
     g
@@ -128,6 +129,7 @@ const start = (data) => {
   }
 
   function down(svg, d) {
+    console.log("node", svg, svg.node());
     if (!d.children || d3.active(svg.node())) return;
 
     // Rebind the current node to the background.
@@ -203,7 +205,9 @@ const start = (data) => {
       .attr("x", margin.left - 6)
       .attr("y", (barStep * (1 - barPadding)) / 2)
       .attr("dy", ".35em")
-      .text((d) => d.data.name);
+
+      .text((d) => d.data.name)
+      .style("fill", "darkOrange");
 
     bar
       .append("rect")
@@ -214,11 +218,8 @@ const start = (data) => {
     return g;
   }
 
-  const svg = d3
-    .select("#chart")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height);
+  const svg = d3.select(target).append("svg");
+  svg.attr("width", width).attr("height", height);
 
   x.domain([0, root.value]);
 
@@ -235,15 +236,6 @@ const start = (data) => {
   svg.append("g").call(xAxis);
 
   svg.append("g").call(yAxis);
-
+  console.log("svg", svg);
   down(svg, root);
-};
-
-d3.json("flare-2.json").then((data) => {
-  start({
-    ...data,
-    children: data.children.map((d) => {
-      return { ...d, children: [], value: 500 };
-    }),
-  });
-});
+}

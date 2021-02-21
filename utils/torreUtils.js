@@ -9,8 +9,9 @@ Created by: David Bautista
 const fetch = require("node-fetch");
 require("dotenv").config();
 
-/* Getting Skills reducer function */
-const getSkillsOf = (endpoint, strengths, maxStrengths, levelExperience) => {
+/* Support Functions */
+
+const getSkillsPayload = (strengths, maxStrengths, levelExperience) => {
   const skills = strengths
     .sort((a, b) => b.recommendations - a.recommendations)
     .map((s) => s.name.toLowerCase());
@@ -23,25 +24,40 @@ const getSkillsOf = (endpoint, strengths, maxStrengths, levelExperience) => {
       },
     };
   });
-
-  /* Payload for POST request */
+  // Payload to be returned
   const payload = JSON.stringify({ or: skillsRoles });
 
+  return { payload: payload, skills: skills };
+};
+
+// Get agregartor reducer function
+const getAggregatorsOf = (endpoint, payload) => {
+  return fetch(endpoint, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: payload,
+  }).then((response) => {
+    if (response.status === 200) return response.json();
+    throw new Error("failed getting Torre API response");
+  });
+};
+
+// Get Skills reducer function
+const getSkillsOf = (endpoint, strengths, maxStrengths, levelExperience) => {
+  //payload to send in POST request body
+  const { payload, skills } = getSkillsPayload(
+    strengths,
+    maxStrengths,
+    levelExperience
+  );
+
   return new Promise((resolve, reject) =>
-    fetch(endpoint, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: payload,
-    })
-      .then((response) => {
-        if (response.status === 200) return response.json();
-        throw new Error("failed getting Torre API response");
-      })
-      .then((responseJson) => {
-        let leftSkills = responseJson.aggregators.skill;
+    getAggregatorsOf(endpoint, payload)
+      .then((aggregators) => {
+        let leftSkills = aggregators.aggregators.skill;
 
         /* Filter only the ones I don't have in list above. */
         leftSkills = leftSkills.filter(

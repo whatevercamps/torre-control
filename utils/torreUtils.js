@@ -38,7 +38,7 @@ const getSkillsOf = (endpoint, strengths, maxStrengths, levelExperience) => {
     })
       .then((response) => {
         if (response.status === 200) return response.json();
-        throw new Error("failed getting watson api response");
+        throw new Error("failed getting Torre API response");
       })
       .then((responseJson) => {
         let leftSkills = responseJson.aggregators.skill;
@@ -58,15 +58,20 @@ const getSkillsOf = (endpoint, strengths, maxStrengths, levelExperience) => {
 const torreUtils = () => {
   const mu = {};
 
-  const torrePeopleEndPoint =
+  const torrePeopleEndpoint =
     process.env.TORRE_PEOPLE_API_URL || "I didn't read the deploy instructions";
-  const torreOportunitiesEndPoint =
+
+  const torreOportunitiesEndpoint =
     process.env.TORRE_OPORTUNITIES_API_URL ||
+    "I didn't read the deploy instructions";
+
+  const torreStrengthsSkillsEndpoint =
+    process.env.TORRE_STRENGTHS_API_URL ||
     "I didn't read the deploy instructions";
 
   mu.getSkillsOfPeopleAroundMe = (strengths, maxStrengths, levelExperience) => {
     return getSkillsOf(
-      torrePeopleEndPoint,
+      torrePeopleEndpoint,
       strengths,
       maxStrengths,
       levelExperience
@@ -79,11 +84,33 @@ const torreUtils = () => {
     levelExperience
   ) => {
     return getSkillsOf(
-      torreOportunitiesEndPoint,
+      torreOportunitiesEndpoint,
       strengths,
       maxStrengths,
       levelExperience
     );
+  };
+
+  mu.getUserSkills = (username) => {
+    const endpoint = torreStrengthsSkillsEndpoint.replace(
+      "<username>",
+      username
+    );
+
+    console.log("endpoint", endpoint);
+
+    return fetch(endpoint, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }).then((response) => {
+      if (response.status === 200) return response.json();
+      throw new Error(
+        `failed getting Torre API response 200, got status ${response.status}`
+      );
+    });
   };
 
   return mu;

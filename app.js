@@ -9,6 +9,7 @@ var logger = require("morgan");
 
 /* Routes import */
 const skillsRoute = require("./routes/skills");
+const userRoute = require("./routes/users");
 
 var app = express();
 
@@ -19,6 +20,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "front-end/build")));
 
 app.use("/api/skills", skillsRoute);
+app.use("/api/user", userRoute);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname + "/front-end/build/index.html"));

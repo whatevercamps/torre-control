@@ -9,6 +9,7 @@ var logger = require("morgan");
 
 /* Routes import */
 const skillsRoute = require("./routes/skills");
+const opportunitiesRoute = require("./routes/opportunities");
 const userRoute = require("./routes/users");
 
 var app = express();
@@ -20,6 +21,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "front-end/build")));
 
 app.use("/api/skills", skillsRoute);
+app.use("/api/opportunities", opportunitiesRoute);
 app.use("/api/user", userRoute);
 
 app.get("*", (req, res) => {

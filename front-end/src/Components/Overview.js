@@ -6,6 +6,7 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 /* Components */
 import SkillsAroundMe from "./SkillsAroundMe";
 import MySkills from "./MySkills";
+import OpportunitiesReport from "./OpportunitiesReport";
 
 export default function Overview(props) {
   /* props */
@@ -14,8 +15,10 @@ export default function Overview(props) {
   /* state */
   const [mySkills, setMySkills] = useState(null);
   const [peopleAroundMeSkills, setPeopleAroundMeSkills] = useState(null);
+  const [opportunitiesInfo, setOpportunitiesInfo] = useState(null);
 
   /* Functions */
+
   const getTorreSkillsByUsername = (username) => {
     fetch(`/api/user/skills?username=${username}`, {
       method: "GET",
@@ -67,6 +70,33 @@ export default function Overview(props) {
       });
   };
 
+  const getOpportunitiesInfo = (mySkills) => {
+    const payload = { strengths: mySkills };
+
+    fetch("/api/opportunities/info", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => {
+        if (response.status === 200) return response.json();
+        throw new Error("failed getting API response with 200 status");
+      })
+      .then((opportunitiesResponse) => {
+        if (opportunitiesResponse) {
+          setOpportunitiesInfo(opportunitiesResponse);
+        } else {
+          throw new Error("failed getting Torre skills from my skills");
+        }
+      })
+      .catch((error) => {
+        console.log("API requesting error", error);
+      });
+  };
+
   /* Effects */
   useEffect(() => {
     if (torreUsername && !mySkills) {
@@ -77,6 +107,7 @@ export default function Overview(props) {
   useEffect(() => {
     if (mySkills) {
       getPeopleAroundMeSkills(mySkills);
+      getOpportunitiesInfo(mySkills);
     }
   }, [mySkills]);
 
@@ -84,13 +115,22 @@ export default function Overview(props) {
     <div className='Overview'>
       <Container fluid>
         <Row>
-          <Col md={6}>
-            <Card>
+          <Col md={3}>
+            <Card className='dark'>
               <Card.Body>
-                <Card.Title>Skills around me</Card.Title>
+                <Card.Title className='torreTitle'>My skills</Card.Title>
                 <Card.Subtitle className='text-muted'>
-                  Let's see what skills the people around user {torreUsername}{" "}
-                  have
+                  Let's see what skills user <code>{torreUsername}</code> already have
+                </Card.Subtitle>
+                <hr />
+                <MySkills mySkills={mySkills} />
+              </Card.Body>
+            </Card>
+            <Card className='dark'>
+              <Card.Body>
+                <Card.Title className='torreTitle'>Skills around me</Card.Title>
+                <Card.Subtitle className='text-muted'>
+                  Let's see what skills the people around user <code>{torreUsername}</code> have
                 </Card.Subtitle>
                 <hr />
                 <SkillsAroundMe SkillsAroundMe={peopleAroundMeSkills} />
@@ -100,12 +140,10 @@ export default function Overview(props) {
           <Col md={6}>
             <Card className='dark'>
               <Card.Body>
-                <Card.Title>My skills</Card.Title>
-                <Card.Subtitle className='text-muted'>
-                  Let's see what skills {torreUsername} already have
-                </Card.Subtitle>
+                <Card.Title className='torreTitle'>Opportunities</Card.Title>
+                <Card.Subtitle className='text-muted'>Let's see what job opportunities are around</Card.Subtitle>
                 <hr />
-                <MySkills mySkills={mySkills} />
+                <OpportunitiesReport opportunitiesInfo={opportunitiesInfo} />
               </Card.Body>
             </Card>
           </Col>

@@ -9,6 +9,8 @@ import Loading from "./Loading";
 import MySkills from "./MySkills";
 import OpportunitiesReport from "./OpportunitiesReport/OpportunitiesReport";
 import Houston from "./Houston/Houston";
+import HoustonMobileTrigger from "./Houston/HoustonMobileTrigger";
+import AlertMessage from "./AlertMessage";
 
 export default function Overview(props) {
   let history = useHistory();
@@ -23,6 +25,8 @@ export default function Overview(props) {
   const [sketchOpportunitiesReport, setSketchOpportunitiesReport] = useState(null);
   const [sketchMode, setSketchMode] = useState(null);
   const [remainingLoad, setRemainingLoad] = useState(0);
+  const [mobileHoustonActive, setMobileHoustonActive] = useState(false);
+  const [alertMessage, setAlertMessage] = useState(null);
 
   /* Functions */
 
@@ -38,7 +42,7 @@ export default function Overview(props) {
       .then((response) => {
         if (response.status === 200) return response.json();
 
-        history.push("/");
+        setAlertMessage("getting Torre user");
 
         throw new Error("failed getting Torre response with 200 status");
       })
@@ -139,13 +143,13 @@ export default function Overview(props) {
 
   return (
     <div className='Overview'>
-      {remainingLoad > 0 && <Loading loadingType={sketchMode ? "onlyBlur" : "block"} />}
-      {(sketchMode || remainingLoad <= 0) && (
+      {remainingLoad > 0 && !alertMessage && <Loading loadingType={sketchMode ? "onlyBlur" : "block"} />}
+      {(sketchMode || remainingLoad <= 0) && !alertMessage && (
         <Container fluid>
           <Row>
-            <Col md={9} className='charts'>
+            <Col lg={9} md={7} sm={12} className='charts'>
               <Row>
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Card className='dark'>
                     <Card.Body>
                       <Card.Title className='torreTitle'>My {sketchMode && <code>{"{sketch}"}</code>} skills</Card.Title>
@@ -167,8 +171,9 @@ export default function Overview(props) {
                     </Card.Body>
                   </Card>
                 </Col>
-                <Col md={6}>
+                <Col md={12} lg={6}>
                   <Card className='dark'>
+                    {/* TODO: Implemente auto scroll when new skill is added (only mobile) */}
                     <Card.Body>
                       <Card.Title className='torreTitle'>Opportunities</Card.Title>
                       <Card.Subtitle className='text-muted'>Let's see what job opportunities are around</Card.Subtitle>
@@ -179,13 +184,14 @@ export default function Overview(props) {
                 </Col>
               </Row>
             </Col>
-            {/* TODO: Implement mobile view for chatbot */}
-            <Col sm={false} md={3} className='no-padding d-none d-sm-none d-md-block'>
-              <Houston />
+            <Col lg={3} md={5} sm={12} className='no-padding'>
+              <Houston active={mobileHoustonActive} setMobileHoustonActive={setMobileHoustonActive} />
             </Col>
           </Row>
         </Container>
       )}
+      {(sketchMode || remainingLoad <= 0) && !mobileHoustonActive && !alertMessage && <HoustonMobileTrigger setMobileHoustonActive={setMobileHoustonActive} />}
+      {alertMessage && <AlertMessage alertMessage={alertMessage} setAlertMessage={setAlertMessage} />}
     </div>
   );
 }

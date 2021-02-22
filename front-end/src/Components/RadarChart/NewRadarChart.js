@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ResponsiveRadar } from "@nivo/radar";
 
 const chartTheme = {
@@ -25,39 +25,75 @@ const chartTheme = {
   },
 };
 
-const dataTemp = [
-  {
-    name: "usd20",
-    current: 78,
-    sketch: 0,
-  },
-  {
-    name: "usd10",
-    current: 102,
-    sketch: 0,
-  },
-  {
-    name: "usd30",
-    current: 47,
-    sketch: 0,
-  },
-  {
-    name: "usd40",
-    current: 28,
-    sketch: 0,
-  },
-  {
-    name: "usd50",
-    current: 64,
-    sketch: 0,
-  },
-];
-
 export default function NewRadarChart(props) {
+  const [fD, setFD] = useState(true);
+  const [dataTemp, setDataTemp] = useState([
+    {
+      option: "usd20",
+      current: 78,
+      sketch: 0,
+    },
+    {
+      option: "usd10",
+      current: 102,
+      sketch: 0,
+    },
+    {
+      option: "usd30",
+      current: 47,
+      sketch: 0,
+    },
+    {
+      option: "usd40",
+      current: 28,
+      sketch: 0,
+    },
+    {
+      option: "usd50",
+      current: 64,
+      sketch: 0,
+    },
+  ]);
   const { data } = props;
   const { keys } = props;
 
-  return (
+  useEffect(() => {
+    console.log("radar data change", data);
+    if (data) {
+      if (!fD) {
+        setDataTemp([
+          {
+            option: "usd20",
+            current: 400,
+            sketch: 400,
+          },
+          {
+            option: "usd10",
+            current: 400,
+            sketch: 400,
+          },
+          {
+            option: "usd30",
+            current: 400,
+            sketch: 400,
+          },
+          {
+            option: "usd40",
+            current: 400,
+            sketch: 400,
+          },
+          {
+            option: "usd50",
+            current: 400,
+            sketch: 400,
+          },
+        ]);
+      }
+      setFD(false);
+    }
+  }, [data]);
+
+  return dataTemp ? (
     <div className='NewRadarChart' style={{ height: "50vh" }}>
       <ResponsiveRadar
         theme={chartTheme}
@@ -109,5 +145,7 @@ export default function NewRadarChart(props) {
         ]}
       />
     </div>
+  ) : (
+    <></>
   );
 }

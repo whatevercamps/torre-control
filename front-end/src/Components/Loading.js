@@ -14,9 +14,15 @@ export default function Loading() {
   `;
 
   useEffect(() => {
-    setInterval(() => {
-      setCurrentMessageIndex((c) => c + 1);
-    }, 2000);
+    let mount = true;
+    if (mount)
+      setInterval(() => {
+        setCurrentMessageIndex((c) => c + 1);
+      }, 2000);
+
+    return () => {
+      mount = false;
+    };
   }, []);
 
   return (

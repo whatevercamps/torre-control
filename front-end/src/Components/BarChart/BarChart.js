@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 
-export default function BarChart(data, target) {
+export default function BarChart(data, target, addSkill) {
   const margin = { top: 30, right: 30, bottom: 0, left: 120 };
   const duration = 750;
   const barStep = 27;
@@ -25,9 +25,7 @@ export default function BarChart(data, target) {
       .attr("class", "x-axis")
       .attr("transform", `translate(0,${margin.top})`)
       .call(d3.axisTop(x).ticks(width / 80, "s"))
-      .call((g) =>
-        (g.selection ? g.selection() : g).select(".domain").remove()
-      );
+      .call((g) => (g.selection ? g.selection() : g).select(".domain").remove());
 
   const x = d3.scaleLinear().range([margin.left, width - margin.right]);
 
@@ -35,10 +33,7 @@ export default function BarChart(data, target) {
     .hierarchy(data)
     .sum((d) => d.value)
     .sort((a, b) => b.value - a.value)
-    .eachAfter(
-      (d) =>
-        (d.index = d.parent ? (d.parent.index = d.parent.index + 1 || 0) : 0)
-    );
+    .eachAfter((d) => (d.index = d.parent ? (d.parent.index = d.parent.index + 1 || 0) : 0));
 
   let max = 1;
   root.each((d) => d.children && (max = Math.max(max, d.children.length)));
@@ -87,10 +82,7 @@ export default function BarChart(data, target) {
     exit.selectAll("g").transition(transition1).attr("transform", stagger());
 
     // Transition exiting bars to the parent’s position.
-    exit
-      .selectAll("g")
-      .transition(transition2)
-      .attr("transform", stack(d.index));
+    exit.selectAll("g").transition(transition2).attr("transform", stack(d.index));
 
     // Transition exiting rects to the new scale and fade to parent color.
     exit
@@ -106,9 +98,7 @@ export default function BarChart(data, target) {
     // Enter the new bars for the clicked-on data's parent.
     const enter = bar(svg, down, d.parent, ".exit").attr("fill-opacity", 0);
 
-    enter
-      .selectAll("g")
-      .attr("transform", (d, i) => `translate(0,${barStep * i})`);
+    enter.selectAll("g").attr("transform", (d, i) => `translate(0,${barStep * i})`);
 
     // Transition entering bars to fade in over the full duration.
     enter.transition(transition2).attr("fill-opacity", 1);
@@ -156,11 +146,7 @@ export default function BarChart(data, target) {
     enter.transition(transition1).attr("fill-opacity", 1);
 
     // Transition entering bars to their new y-position.
-    enter
-      .selectAll("g")
-      .attr("transform", stack(d.index))
-      .transition(transition1)
-      .attr("transform", stagger());
+    enter.selectAll("g").attr("transform", stack(d.index)).transition(transition1).attr("transform", stagger());
 
     // Update the x-scale domain.
     x.domain([0, d3.max(d.children, (d) => d.value)]);
@@ -197,8 +183,8 @@ export default function BarChart(data, target) {
       .selectAll("g")
       .data(d.children)
       .join("g")
-      .attr("cursor", (d) => (!d.children ? null : "pointer"))
-      .on("click", (event, d) => down(svg, d));
+      .attr("cursor", "pointer")
+      .on("click", (event, d) => addSkill(d.data.name));
 
     bar
       .append("text")
@@ -212,8 +198,40 @@ export default function BarChart(data, target) {
     bar
       .append("rect")
       .attr("x", x(0))
+      .attr("id", (d) => "rect" + d.data.name.split(" ").join("-"))
       .attr("width", (d) => x(d.value) - x(0))
       .attr("height", barStep * (1 - barPadding));
+
+    bar
+      .append("text")
+      .attr("class", "addLabel")
+      .attr("id", (d) => "text" + d.data.name.split(" ").join("-"))
+      .attr("x", 270)
+      .attr("y", (barStep * (1 - barPadding)) / 2)
+      .attr("dy", ".35em")
+      .text("add this skill to my sketch")
+      .style("fill", "#fff")
+      .style("opacity", 0);
+
+    bar
+      .on("mouseover", (event, d) => {
+        d3.select("#rect" + d.data.name.split(" ").join("-"))
+          .transition(1000)
+          .attr("width", (d) => x(d.value) - x(0) + 100);
+
+        d3.select("#text" + d.data.name.split(" ").join("-"))
+          .transition(1000)
+          .style("opacity", 1);
+      })
+      .on("mouseout", (event, d) => {
+        d3.select("#" + d.data.name.split(" ").join("-"))
+          .transition(500)
+          .attr("width", (d) => x(d.value) - x(0));
+
+        d3.select("#text" + d.data.name.split(" ").join("-"))
+          .transition(500)
+          .style("opacity", 0);
+      });
 
     return g;
   }
@@ -223,15 +241,7 @@ export default function BarChart(data, target) {
 
   x.domain([0, root.value]);
 
-  svg
-    .append("rect")
-    .attr("class", "background")
-    .attr("fill", "none")
-    .attr("pointer-events", "all")
-    .attr("width", width)
-    .attr("height", height)
-    .attr("cursor", "pointer")
-    .on("click", (event, d) => up(svg, d));
+  svg.append("rect").attr("class", "background").attr("fill", "none").attr("pointer-events", "all").attr("width", width).attr("height", height);
 
   svg.append("g").call(xAxis);
 

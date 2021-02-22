@@ -97,6 +97,10 @@ export default function Overview(props) {
       });
   };
 
+  const addSkill = (skill) => {
+    setMySkills((skills) => [...skills, { ...skill, new: true }]);
+  };
+
   /* Effects */
   useEffect(() => {
     if (torreUsername && !mySkills) {
@@ -133,7 +137,7 @@ export default function Overview(props) {
                   Let's see what skills the people around user <code>{torreUsername}</code> have
                 </Card.Subtitle>
                 <hr />
-                <SkillsAroundMe SkillsAroundMe={peopleAroundMeSkills} />
+                <SkillsAroundMe SkillsAroundMe={peopleAroundMeSkills} addSkill={addSkill} />
               </Card.Body>
             </Card>
           </Col>

@@ -12,7 +12,7 @@ export default function BarChartWrapper(props) {
 
   useEffect(() => {
     if (ref && ref.current && data) {
-      BarChart(data, ref.current);
+      BarChart(data, ref.current, props.addSkill);
     }
   }, [ref, data]);
 

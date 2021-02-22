@@ -9,6 +9,7 @@ export default function SkillsAroundMe(props) {
 
   // Needed props
   const { SkillsAroundMe } = props;
+  const { addSkill } = props;
 
   useEffect(() => {
     console.log("SkillsAroundMe", SkillsAroundMe);
@@ -24,7 +25,7 @@ export default function SkillsAroundMe(props) {
 
   return (
     <div className='SkillsAroundMe'>
-      <BarChartWrapper data={data} />
+      <BarChartWrapper data={data} addSkill={addSkill} />
     </div>
   );
 }

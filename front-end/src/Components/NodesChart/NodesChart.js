@@ -6,7 +6,7 @@ const orderedColor = function (id) {
   return colors[id % colors.length];
 };
 
-export default function NodesChart(data, target) {
+export default function NodesChart(data, target, sketchMode) {
   console.log("data", data);
   const height = 600;
   const width = target.offsetWidth + 200;
@@ -29,11 +29,7 @@ export default function NodesChart(data, target) {
       d.fy = null;
     }
 
-    return d3
-      .drag()
-      .on("start", dragstarted)
-      .on("drag", dragged)
-      .on("end", dragended);
+    return d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended);
   };
 
   function wrap(text, width) {
@@ -58,10 +54,7 @@ export default function NodesChart(data, target) {
       while ((word = words.pop())) {
         line.push(word);
         tspan.text(line.join(" "));
-        if (
-          tspan.node().getComputedTextLength() > width &&
-          word !== firstWord
-        ) {
+        if (tspan.node().getComputedTextLength() > width && word !== firstWord) {
           line.pop();
           tspan.text(line.join(" "));
           line = [word];
@@ -90,12 +83,14 @@ export default function NodesChart(data, target) {
     .force("center", d3.forceCenter(width / 2, height / 2))
     .force("collide", d3.forceCollide().radius(41).iterations(5));
 
-  const svg = d3
-    .select(target)
-    .append("svg")
-    .attr("viewBox", [0, 0, width, height]);
+  console.log("new data", data);
+
+  d3.select(target).selectAll("*").remove();
+  const svg = d3.select(target).append("svg").attr("viewBox", [0, 0, width, height]);
   svg.attr("id", "graph");
   svg.style("overflow", "visible");
+
+  console.log("sketchModel", sketchMode);
 
   const node = svg
     .append("g")
@@ -104,10 +99,11 @@ export default function NodesChart(data, target) {
     .join("g")
     .attr("class", "node")
     .append("circle")
-    .attr("stroke", "#031628")
+    .attr("stroke", (d) => (!d.sketch || !sketchMode ? "#031628" : "#ccc"))
     .attr("stroke-width", 2)
     .attr("r", 40)
     .attr("fill", (d) => orderedColor(d.id))
+    .style("opacity", (d) => (!sketchMode ? 1 : !d.sketch ? 0.3 : 1))
     .call(drag(simulation));
 
   var linkText = svg

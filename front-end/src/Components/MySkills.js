@@ -6,7 +6,7 @@ import NodesChartWrapper from "./NodesChart/NodesChartWrapper";
 export default function MySkills(props) {
   return (
     <div className='MySkills'>
-      <NodesChartWrapper data={props.mySkills} />
+      <NodesChartWrapper data={props.mySkills} sketchMode={props.sketchMode} />
     </div>
   );
 }

@@ -184,7 +184,7 @@ export default function BarChart(data, target, addSkill) {
       .data(d.children)
       .join("g")
       .attr("cursor", "pointer")
-      .on("click", (event, d) => addSkill(d.data.name));
+      .on("click", (event, d) => addSkill(d.data));
 
     bar
       .append("text")
@@ -224,7 +224,7 @@ export default function BarChart(data, target, addSkill) {
           .style("opacity", 1);
       })
       .on("mouseout", (event, d) => {
-        d3.select("#" + d.data.name.split(" ").join("-"))
+        d3.select("#rect" + d.data.name.split(" ").join("-"))
           .transition(500)
           .attr("width", (d) => x(d.value) - x(0));
 

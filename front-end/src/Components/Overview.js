@@ -6,7 +6,7 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 /* Components */
 import SkillsAroundMe from "./SkillsAroundMe";
 import MySkills from "./MySkills";
-import OpportunitiesReport from "./OpportunitiesReport";
+import OpportunitiesReport from "./OpportunitiesReport/OpportunitiesReport";
 
 export default function Overview(props) {
   /* props */
@@ -15,7 +15,9 @@ export default function Overview(props) {
   /* state */
   const [mySkills, setMySkills] = useState(null);
   const [peopleAroundMeSkills, setPeopleAroundMeSkills] = useState(null);
-  const [opportunitiesInfo, setOpportunitiesInfo] = useState(null);
+  const [opportunitiesReport, setOpportunitiesReport] = useState(null);
+  const [sketchOpportunitiesReport, setSketchOpportunitiesReport] = useState(null);
+  const [sketchMode, setSketchMode] = useState(null);
 
   /* Functions */
 
@@ -70,10 +72,10 @@ export default function Overview(props) {
       });
   };
 
-  const getOpportunitiesInfo = (mySkills) => {
+  const getOpportunitiesReport = (mySkills) => {
     const payload = { strengths: mySkills };
 
-    fetch("/api/opportunities/info", {
+    fetch("/api/opportunities/report", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -85,9 +87,14 @@ export default function Overview(props) {
         if (response.status === 200) return response.json();
         throw new Error("failed getting API response with 200 status");
       })
-      .then((opportunitiesResponse) => {
-        if (opportunitiesResponse) {
-          setOpportunitiesInfo(opportunitiesResponse);
+      .then((opportunitiesReportResponse) => {
+        if (opportunitiesReportResponse) {
+          console.log("opportunitiesReportResponse", opportunitiesReportResponse);
+          if (sketchMode) {
+            setSketchOpportunitiesReport(opportunitiesReportResponse);
+          } else {
+            setOpportunitiesReport(opportunitiesReportResponse);
+          }
         } else {
           throw new Error("failed getting Torre skills from my skills");
         }
@@ -98,7 +105,8 @@ export default function Overview(props) {
   };
 
   const addSkill = (skill) => {
-    setMySkills((skills) => [...skills, { ...skill, new: true }]);
+    setSketchMode(true);
+    setMySkills((skills) => [...skills, { ...skill, sketch: true }]);
   };
 
   /* Effects */
@@ -110,8 +118,10 @@ export default function Overview(props) {
 
   useEffect(() => {
     if (mySkills) {
-      getPeopleAroundMeSkills(mySkills);
-      getOpportunitiesInfo(mySkills);
+      getOpportunitiesReport(mySkills);
+      if (!sketchMode) {
+        getPeopleAroundMeSkills(mySkills);
+      }
     }
   }, [mySkills]);
 
@@ -122,12 +132,12 @@ export default function Overview(props) {
           <Col md={3}>
             <Card className='dark'>
               <Card.Body>
-                <Card.Title className='torreTitle'>My skills</Card.Title>
+                <Card.Title className='torreTitle'>My {sketchMode && <code>{"{sketch}"}</code>} skills</Card.Title>
                 <Card.Subtitle className='text-muted'>
                   Let's see what skills user <code>{torreUsername}</code> already have
                 </Card.Subtitle>
                 <hr />
-                <MySkills mySkills={mySkills} />
+                <MySkills mySkills={mySkills} sketchMode={sketchMode} />
               </Card.Body>
             </Card>
             <Card className='dark'>
@@ -141,13 +151,13 @@ export default function Overview(props) {
               </Card.Body>
             </Card>
           </Col>
-          <Col md={6}>
+          <Col md={4}>
             <Card className='dark'>
               <Card.Body>
                 <Card.Title className='torreTitle'>Opportunities</Card.Title>
                 <Card.Subtitle className='text-muted'>Let's see what job opportunities are around</Card.Subtitle>
                 <hr />
-                <OpportunitiesReport opportunitiesInfo={opportunitiesInfo} />
+                <OpportunitiesReport opportunitiesReport={opportunitiesReport} sketchOpportunitiesReport={sketchOpportunitiesReport} />
               </Card.Body>
             </Card>
           </Col>

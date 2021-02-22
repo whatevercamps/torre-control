@@ -12,9 +12,13 @@ require("dotenv").config();
 /* Support Functions */
 
 const getSkillsPayload = (strengths, maxStrengths, levelExperience) => {
-  const skills = strengths.sort((a, b) => b.recommendations - a.recommendations).map((s) => s.name.toLowerCase());
+  const numberOfSketchSkills = strengths.filter((s) => s.sketch).length;
+  const skills = strengths
+    .sort((a, b) => (b.recommendations || 0) + (b.weight || 0) + (b.value || 0) - ((a.recommendations || 0) + (a.weight || 0) + (a.value || 0)))
+    .map((s) => s.name.toLowerCase());
 
-  const skillsRoles = skills.slice(0, maxStrengths || 5).map((s) => {
+  console.log("numberOfSketchSkills", numberOfSketchSkills);
+  const skillsRoles = skills.slice(0, (maxStrengths || 5) + numberOfSketchSkills).map((s) => {
     return {
       "skill/role": {
         text: s,
@@ -24,7 +28,6 @@ const getSkillsPayload = (strengths, maxStrengths, levelExperience) => {
   });
   // Payload to be returned
   const payload = JSON.stringify({ or: skillsRoles });
-
   return { payload: payload, skills: skills };
 };
 
@@ -47,7 +50,6 @@ const getAggregatorsOf = (endpoint, payload) => {
 const getSkillsOf = (endpoint, strengths, maxStrengths, levelExperience) => {
   //payload to send in POST request body
   const { payload, skills } = getSkillsPayload(strengths, maxStrengths, levelExperience);
-
   return new Promise((resolve, reject) =>
     getAggregatorsOf(endpoint, payload)
       .then((aggregators) => {
@@ -112,10 +114,41 @@ const torreUtils = () => {
     );
   };
 
-  utils.getOpportunitiesInfo = (strengths, maxStrengths, levelExperience) => {
+  utils.getOpportunitiesReport = (strengths, maxStrengths, levelExperience) => {
     const { payload } = getSkillsPayload(strengths, maxStrengths, levelExperience);
 
-    return getAggregatorsOf(torreOpportunitiesEndpoint, payload);
+    console.log("report payload", payload);
+
+    return new Promise((resolve, reject) =>
+      getAggregatorsOf(torreOpportunitiesEndpoint, payload)
+        .then((aggregatorsResponse) => {
+          let { aggregators } = aggregatorsResponse;
+          let report = [];
+          try {
+            delete aggregators.organization;
+            delete aggregators.remote;
+            delete aggregators.status;
+            delete aggregators.skill;
+          } catch (err) {
+            reject(err);
+          }
+
+          for (let aggregatorName in aggregators) {
+            let aggregator = aggregators[aggregatorName];
+
+            aggregator = aggregator.map((option) => {
+              return {
+                name: aggregatorName,
+                option: option.value,
+                current: option.total,
+              };
+            });
+            report.push(aggregator);
+          }
+          resolve(report);
+        })
+        .catch(reject)
+    );
   };
 
   return utils;

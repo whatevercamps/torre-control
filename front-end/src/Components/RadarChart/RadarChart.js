@@ -1,6 +1,9 @@
 import * as d3 from "d3v5";
 
 export default function RadarChart(data, target, options) {
+  //mod for save update function
+  const mod = {};
+
   const max = Math.max;
   const sin = Math.sin;
   const cos = Math.cos;
@@ -106,7 +109,7 @@ export default function RadarChart(data, target, options) {
   console.log("cfg", cfg);
 
   //Initiate the radar chart SVG
-  let svg = parent.append("svg").attr("width", cfg.w).attr("height", cfg.h).attr("class", "radar");
+  let svg = parent.append("svg").attr("width", Math.min(cfg.w, cfg.h)).attr("height", Math.min(cfg.w, cfg.h)).attr("class", "radar");
 
   //Append a g element
   let g = svg
@@ -210,6 +213,7 @@ export default function RadarChart(data, target, options) {
   }
 
   //Create a wrapper for the blobs
+
   const blobWrapper = g.selectAll(".radarWrapper").data(data).enter().append("g").attr("class", "radarWrapper");
 
   //Append the backgrounds

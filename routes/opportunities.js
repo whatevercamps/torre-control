@@ -34,22 +34,14 @@ router.post("/salary-range", function (req, res, next) {
 });
 
 /* GET opportunities information with certain skills. */
-router.post("/info", function (req, res, next) {
+router.post("/report", function (req, res, next) {
   const strengths = req.body.strengths;
+  const maxStrengths = req.query.max_strengths;
   //TODO: Handle if strengths is null;
   if (strengths && strengths.length) {
     torreUtils
-      .getOpportunitiesInfo(strengths)
-      .then(({ aggregators }) => {
-        try {
-          delete aggregators.organization;
-          delete aggregators.status;
-          delete aggregators.skill;
-        } catch (e) {
-          true;
-        }
-        res.json(aggregators);
-      })
+      .getOpportunitiesReport(strengths, maxStrengths)
+      .then((report) => res.json(report))
       .catch(next);
   }
 });

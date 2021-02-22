@@ -18,7 +18,8 @@ export default function NodesChartWrapper(props) {
             return { ...node, id: index + 1 };
           }),
         },
-        ref.current
+        ref.current,
+        props.sketchMode
       );
     }
   }, [ref, data]);

@@ -138,11 +138,17 @@ export default function Conversation() {
   };
 
   useEffect(() => {
-    dialog(addMessages, setMessages, presendWatsonMessage);
+    let mounted = true;
+    if (mounted) {
+      dialog(addMessages, setMessages, presendWatsonMessage);
+    }
+    return () => (mounted = false);
   }, []);
 
   useEffect(() => {
-    if (refForScroll) refForScroll.current.scrollIntoView({ behavior: "smooth" });
+    let mounted = true;
+    if (refForScroll && mounted) refForScroll.current.scrollIntoView({ behavior: "smooth" });
+    return () => (mounted = false);
   }, [refForScroll, messages]);
 
   return (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import { useHistory } from "react-router-dom";
 /* Dependencies */
 import { Container, Row, Col, Card } from "react-bootstrap";
 
@@ -11,6 +11,8 @@ import OpportunitiesReport from "./OpportunitiesReport/OpportunitiesReport";
 import Houston from "./Houston/Houston";
 
 export default function Overview(props) {
+  let history = useHistory();
+
   /* props */
   const { torreUsername } = props.match.params;
 
@@ -35,6 +37,9 @@ export default function Overview(props) {
     })
       .then((response) => {
         if (response.status === 200) return response.json();
+
+        history.push("/");
+
         throw new Error("failed getting Torre response with 200 status");
       })
       .then((torreResponse) => {

@@ -14,6 +14,9 @@ However, to achieve this goal, it is necessary to help workers to find those ski
 
 This is where Torre Control comes in. With TC users can know what skills are around them with just their Torre username. Also, TC will allow them to visualize their own skills, and create a Sketch where they can add some of the skills they do not yet have, to see how this affects their job offers.
 
+![Interface GIF](https://media3.giphy.com/media/zw9G2dm4c5T8s0dAhA/giphy.gif "Torre Control overview")
+Uploaded with Giphy
+
 ## Logbook
 
 I kept a log of the most relevant things during the creative process. In case you are interested, here is the link 👉🏻 https://github.com/whatevercamps/torre-control/wiki/LogBook
@@ -95,9 +98,3 @@ If you want to modify front-end proyect and deploy it in server side...
 
 1. I would like to implement in future versions a connection to instant messaging services through one or two additional microservices. Something like that, however I am listening to different ideas! 🤓
    ![Arch diagram](https://i.imgur.com/Tk2tZTA.png "Architecture Diagram")
-
-## Thaks!
-
-Thanks for reading...
-
-David 🤓

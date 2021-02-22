@@ -65,13 +65,13 @@ export default function NewRadarChart(props) {
         keys={keys}
         indexBy='option'
         maxValue='auto'
-        margin={{ top: 70, right: 120, bottom: 40, left: 120 }}
+        margin={{ top: 70, right: 50, bottom: 40, left: 50 }}
         curve='linearClosed'
         borderWidth={2}
         borderColor={{ from: "color" }}
         gridLevels={5}
         gridShape='circular'
-        gridLabelOffset={36}
+        gridLabelOffset={10}
         enableDots={true}
         dotSize={10}
         dotColor={{ theme: "background" }}

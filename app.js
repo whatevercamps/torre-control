@@ -11,6 +11,7 @@ var logger = require("morgan");
 const skillsRoute = require("./routes/skills");
 const opportunitiesRoute = require("./routes/opportunities");
 const userRoute = require("./routes/users");
+const watsonRoute = require("./routes/watson");
 
 var app = express();
 
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, "front-end/build")));
 app.use("/api/skills", skillsRoute);
 app.use("/api/opportunities", opportunitiesRoute);
 app.use("/api/user", userRoute);
+app.use("/api/watson", watsonRoute);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname + "/front-end/build/index.html"));

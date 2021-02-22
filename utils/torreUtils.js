@@ -65,7 +65,7 @@ const getSkillsOf = (endpoint, strengths, maxStrengths, levelExperience) => {
 
 /* Torre Utils Implementation Module  */
 const torreUtils = () => {
-  const mu = {};
+  const utils = {};
 
   const torrePeopleEndpoint = process.env.TORRE_PEOPLE_API_URL || "I didn't read the deploy instructions";
 
@@ -74,16 +74,16 @@ const torreUtils = () => {
   const torreStrengthsSkillsEndpoint = process.env.TORRE_STRENGTHS_API_URL || "I didn't read the deploy instructions";
 
   // handler that retreive skills of people similar to user in terms of the skills they share.
-  mu.getSkillsOfPeopleAroundMe = (strengths, maxStrengths, levelExperience) => {
+  utils.getSkillsOfPeopleAroundMe = (strengths, maxStrengths, levelExperience) => {
     return getSkillsOf(torrePeopleEndpoint, strengths, maxStrengths, levelExperience);
   };
   // handler that retreive skills of opportunities similar to user in terms of the skills they share.
-  mu.getSkillsOfOpportunitiesAroundMe = (strengths, maxStrengths, levelExperience) => {
+  utils.getSkillsOfOpportunitiesAroundMe = (strengths, maxStrengths, levelExperience) => {
     return getSkillsOf(torreOpportunitiesEndpoint, strengths, maxStrengths, levelExperience);
   };
 
   // handler that retreive skills of one user.
-  mu.getUserSkills = (username) => {
+  utils.getUserSkills = (username) => {
     const endpoint = torreStrengthsSkillsEndpoint.replace("<username>", username);
 
     console.log("endpoint", endpoint);
@@ -100,22 +100,25 @@ const torreUtils = () => {
     });
   };
 
-  mu.getOpportunitiesSalaryRange = (strengths, maxStrengths, levelExperience) => {
+  utils.getOpportunitiesSalaryRange = (strengths, maxStrengths, levelExperience) => {
     const { payload } = getSkillsPayload(strengths, maxStrengths, levelExperience);
-
-    console.log("payload", payload);
 
     return new Promise((resolve, reject) =>
       getAggregatorsOf(torreOpportunitiesEndpoint, payload)
         .then(({ aggregators }) => {
-          console.log("aggregator", aggregators);
           resolve(aggregators.compensationrange);
         })
         .catch(reject)
     );
   };
 
-  return mu;
+  utils.getOpportunitiesInfo = (strengths, maxStrengths, levelExperience) => {
+    const { payload } = getSkillsPayload(strengths, maxStrengths, levelExperience);
+
+    return getAggregatorsOf(torreOpportunitiesEndpoint, payload);
+  };
+
+  return utils;
 };
 
 module.exports = torreUtils;

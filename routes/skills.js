@@ -18,13 +18,13 @@ router.post("/of-people", function (req, res, next) {
       .catch(next);
   }
 });
-router.post("/of-oportunities", function (req, res, next) {
+router.post("/of-opportunities", function (req, res, next) {
   const strengths = req.body.strengths;
 
   //TODO: Handle if strengths is null;
   if (strengths && strengths.length) {
     torreUtils
-      .getSkillsOfOportunitiesAroundMe(strengths)
+      .getSkillsOfOpportunitiesAroundMe(strengths)
       .then((skills) => {
         res.json(skills);
       })

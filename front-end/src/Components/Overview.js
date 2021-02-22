@@ -7,6 +7,7 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 import SkillsAroundMe from "./SkillsAroundMe";
 import MySkills from "./MySkills";
 import OpportunitiesReport from "./OpportunitiesReport/OpportunitiesReport";
+import Houston from "./Houston/Houston";
 
 export default function Overview(props) {
   /* props */
@@ -129,37 +130,44 @@ export default function Overview(props) {
     <div className='Overview'>
       <Container fluid>
         <Row>
-          <Col md={3}>
-            <Card className='dark'>
-              <Card.Body>
-                <Card.Title className='torreTitle'>My {sketchMode && <code>{"{sketch}"}</code>} skills</Card.Title>
-                <Card.Subtitle className='text-muted'>
-                  Let's see what skills user <code>{torreUsername}</code> already have
-                </Card.Subtitle>
-                <hr />
-                <MySkills mySkills={mySkills} sketchMode={sketchMode} />
-              </Card.Body>
-            </Card>
-            <Card className='dark'>
-              <Card.Body>
-                <Card.Title className='torreTitle'>Skills around me</Card.Title>
-                <Card.Subtitle className='text-muted'>
-                  Let's see what skills the people around user <code>{torreUsername}</code> have
-                </Card.Subtitle>
-                <hr />
-                <SkillsAroundMe SkillsAroundMe={peopleAroundMeSkills} addSkill={addSkill} />
-              </Card.Body>
-            </Card>
+          <Col md={9} className='charts'>
+            <Row>
+              <Col md={6}>
+                <Card className='dark'>
+                  <Card.Body>
+                    <Card.Title className='torreTitle'>My {sketchMode && <code>{"{sketch}"}</code>} skills</Card.Title>
+                    <Card.Subtitle className='text-muted'>
+                      Let's see what skills user <code>{torreUsername}</code> already have
+                    </Card.Subtitle>
+                    <hr />
+                    <MySkills mySkills={mySkills} sketchMode={sketchMode} />
+                  </Card.Body>
+                </Card>
+                <Card className='dark'>
+                  <Card.Body>
+                    <Card.Title className='torreTitle'>Skills around me</Card.Title>
+                    <Card.Subtitle className='text-muted'>
+                      Let's see what skills the people around user <code>{torreUsername}</code> have
+                    </Card.Subtitle>
+                    <hr />
+                    <SkillsAroundMe SkillsAroundMe={peopleAroundMeSkills} addSkill={addSkill} />
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col md={6}>
+                <Card className='dark'>
+                  <Card.Body>
+                    <Card.Title className='torreTitle'>Opportunities</Card.Title>
+                    <Card.Subtitle className='text-muted'>Let's see what job opportunities are around</Card.Subtitle>
+                    <hr />
+                    <OpportunitiesReport opportunitiesReport={opportunitiesReport} sketchOpportunitiesReport={sketchOpportunitiesReport} />
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
           </Col>
-          <Col md={4}>
-            <Card className='dark'>
-              <Card.Body>
-                <Card.Title className='torreTitle'>Opportunities</Card.Title>
-                <Card.Subtitle className='text-muted'>Let's see what job opportunities are around</Card.Subtitle>
-                <hr />
-                <OpportunitiesReport opportunitiesReport={opportunitiesReport} sketchOpportunitiesReport={sketchOpportunitiesReport} />
-              </Card.Body>
-            </Card>
+          <Col md={3} className='no-padding'>
+            <Houston />
           </Col>
         </Row>
       </Container>

@@ -15,6 +15,7 @@ However, to achieve this goal, it is necessary to help workers to find those ski
 This is where Torre Control comes in. With TC users can know what skills are around them with just their Torre username. Also, TC will allow them to visualize their own skills, and create a Sketch where they can add some of the skills they do not yet have, to see how this affects their job offers.
 
 ![Interface GIF](https://media3.giphy.com/media/zw9G2dm4c5T8s0dAhA/giphy.gif "Torre Control overview")
+
 Uploaded with Giphy
 
 ## Logbook

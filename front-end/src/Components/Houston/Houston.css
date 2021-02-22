@@ -12,15 +12,15 @@
 }
 
 .Message.bot {
-  color: hsl(263, 71%, 40%);
+  color: #27292d;
   background-color: #fff;
   text-align: left;
   border-bottom-left-radius: 0;
 }
 .Message.user {
-  color: hsl(263, 71%, 10%);
+  color: #27292d;
   text-align: center;
-  background-color: hsl(346, 76%, 77%);
+  background-color: #cddc39dd;
   border-bottom-right-radius: 0;
 }
 
@@ -33,7 +33,7 @@
 }
 .Message.clickable:hover {
   cursor: pointer;
-  background-color: hsl(346, 76%, 70%);
+  background-color: #ccdc39;
 }
 
 .scale-up-tl {

@@ -102,7 +102,7 @@ export default function NodesChart(data, target, sketchMode) {
     .attr("stroke", (d) => (!d.sketch || !sketchMode ? "#031628" : "#ccc"))
     .attr("stroke-width", 2)
     .attr("r", 40)
-    .attr("fill", (d) => orderedColor(d.id))
+    .attr("fill", (d) => (d.sketch ? "#cddc39" : "#e83e8c"))
     .style("opacity", (d) => (!sketchMode ? 1 : !d.sketch ? 0.3 : 1))
     .call(drag(simulation));
 

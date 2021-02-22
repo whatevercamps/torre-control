@@ -6,7 +6,7 @@ export default function BarChart(data, target, addSkill) {
   const barStep = 27;
   const width = target.offsetWidth;
 
-  const colors = d3["schemeAccent"];
+  // const colors = "#cddc39", "#ccc";
 
   const yAxis = (g) =>
     g
@@ -89,7 +89,7 @@ export default function BarChart(data, target, addSkill) {
       .selectAll("rect")
       .transition(transition1)
       .attr("width", (d) => x(d.value) - x(0))
-      .attr("fill", (d, i) => colors[i % colors.length]);
+      .attr("fill", "#cddc39");
 
     // Transition exiting text to fade out.
     // Remove exiting nodes.
@@ -109,7 +109,7 @@ export default function BarChart(data, target, addSkill) {
     // When the entering parent rect is done, make it visible!
     enter
       .selectAll("rect")
-      .attr("fill", (d, i) => colors[i % colors.length])
+      .attr("fill", "#cddc39")
       .attr("fill-opacity", (p) => (p === d ? 0 : null))
       .transition(transition2)
       .attr("width", (d) => x(d.value) - x(0))
@@ -163,10 +163,10 @@ export default function BarChart(data, target, addSkill) {
     // Color the bars as parents; they will fade to children if appropriate.
     enter
       .selectAll("rect")
-      .attr("fill", (d, i) => colors[i % colors.length])
+      .attr("fill", "#cddc39")
       .attr("fill-opacity", 1)
       .transition(transition2)
-      .attr("fill", (d, i) => colors[i % colors.length])
+      .attr("fill", "#cddc39")
       .attr("width", (d) => x(d.value) - x(0));
   }
 
@@ -193,7 +193,7 @@ export default function BarChart(data, target, addSkill) {
       .attr("dy", ".35em")
 
       .text((d) => d.data.name)
-      .style("fill", "darkOrange");
+      .style("fill", "#ccc");
 
     bar
       .append("rect")
@@ -216,6 +216,7 @@ export default function BarChart(data, target, addSkill) {
     bar
       .on("mouseover", (event, d) => {
         d3.select("#rect" + d.data.name.split(" ").join("-"))
+          .attr("fill", "#e83e8c")
           .transition(1000)
           .attr("width", (d) => x(d.value) - x(0) + 100);
 
@@ -225,6 +226,7 @@ export default function BarChart(data, target, addSkill) {
       })
       .on("mouseout", (event, d) => {
         d3.select("#rect" + d.data.name.split(" ").join("-"))
+          .attr("fill", "#cddc39")
           .transition(500)
           .attr("width", (d) => x(d.value) - x(0));
 

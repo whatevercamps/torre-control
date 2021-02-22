@@ -12,9 +12,14 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
-.Login {
+.Login,
+.Loading {
   height: 100vh;
   width: 100vw;
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
   background-position: right 0% top 0%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -83,4 +88,12 @@ g.hover {
 
 *::-webkit-scrollbar {
   display: none;
+}
+
+.loadingTitle {
+  color: #cddc39;
+}
+
+.Loading {
+  background-color: #27292deb;
 }

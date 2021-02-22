@@ -80,7 +80,7 @@ export default function NewRadarChart(props) {
         enableDotLabel={true}
         dotLabel={false}
         dotLabelYOffset={-12}
-        colors={{ scheme: "accent" }}
+        colors={["#e83e8c", "#cddc39"]}
         fillOpacity={0.25}
         blendMode='normal'
         animate={true}

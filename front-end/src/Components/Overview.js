@@ -5,6 +5,7 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 
 /* Components */
 import SkillsAroundMe from "./SkillsAroundMe";
+import Loading from "./Loading";
 import MySkills from "./MySkills";
 import OpportunitiesReport from "./OpportunitiesReport/OpportunitiesReport";
 import Houston from "./Houston/Houston";
@@ -19,10 +20,12 @@ export default function Overview(props) {
   const [opportunitiesReport, setOpportunitiesReport] = useState(null);
   const [sketchOpportunitiesReport, setSketchOpportunitiesReport] = useState(null);
   const [sketchMode, setSketchMode] = useState(null);
+  const [remainingLoad, setRemainingLoad] = useState(0);
 
   /* Functions */
 
   const getTorreSkillsByUsername = (username) => {
+    setRemainingLoad((s) => s + 1);
     fetch(`/api/user/skills?username=${username}`, {
       method: "GET",
       headers: {
@@ -37,6 +40,7 @@ export default function Overview(props) {
       .then((torreResponse) => {
         if (torreResponse) {
           setMySkills(torreResponse);
+          setRemainingLoad((s) => s - 1);
         } else {
           throw new Error("failed getting Torre skills from username");
         }
@@ -48,7 +52,7 @@ export default function Overview(props) {
 
   const getPeopleAroundMeSkills = (mySkills) => {
     const payload = { strengths: mySkills };
-
+    setRemainingLoad((s) => s + 1);
     fetch("/api/skills/of-people", {
       method: "POST",
       headers: {
@@ -64,6 +68,7 @@ export default function Overview(props) {
       .then((skillsResponse) => {
         if (skillsResponse) {
           setPeopleAroundMeSkills(skillsResponse);
+          setRemainingLoad((s) => s - 1);
         } else {
           throw new Error("failed getting Torre skills from my skills");
         }
@@ -75,7 +80,7 @@ export default function Overview(props) {
 
   const getOpportunitiesReport = (mySkills) => {
     const payload = { strengths: mySkills };
-
+    setRemainingLoad((s) => s + 1);
     fetch("/api/opportunities/report", {
       method: "POST",
       headers: {
@@ -91,6 +96,7 @@ export default function Overview(props) {
       .then((opportunitiesReportResponse) => {
         if (opportunitiesReportResponse) {
           console.log("opportunitiesReportResponse", opportunitiesReportResponse);
+          setRemainingLoad((s) => s - 1);
           if (sketchMode) {
             setSketchOpportunitiesReport(opportunitiesReportResponse);
           } else {
@@ -128,49 +134,53 @@ export default function Overview(props) {
 
   return (
     <div className='Overview'>
-      <Container fluid>
-        <Row>
-          <Col md={9} className='charts'>
-            <Row>
-              <Col md={6}>
-                <Card className='dark'>
-                  <Card.Body>
-                    <Card.Title className='torreTitle'>My {sketchMode && <code>{"{sketch}"}</code>} skills</Card.Title>
-                    <Card.Subtitle className='text-muted'>
-                      Let's see what skills user <code>{torreUsername}</code> already have
-                    </Card.Subtitle>
-                    <hr />
-                    <MySkills mySkills={mySkills} sketchMode={sketchMode} />
-                  </Card.Body>
-                </Card>
-                <Card className='dark'>
-                  <Card.Body>
-                    <Card.Title className='torreTitle'>Skills around me</Card.Title>
-                    <Card.Subtitle className='text-muted'>
-                      Let's see what skills the people around user <code>{torreUsername}</code> have
-                    </Card.Subtitle>
-                    <hr />
-                    <SkillsAroundMe SkillsAroundMe={peopleAroundMeSkills} addSkill={addSkill} />
-                  </Card.Body>
-                </Card>
-              </Col>
-              <Col md={6}>
-                <Card className='dark'>
-                  <Card.Body>
-                    <Card.Title className='torreTitle'>Opportunities</Card.Title>
-                    <Card.Subtitle className='text-muted'>Let's see what job opportunities are around</Card.Subtitle>
-                    <hr />
-                    <OpportunitiesReport opportunitiesReport={opportunitiesReport} sketchOpportunitiesReport={sketchOpportunitiesReport} />
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-          </Col>
-          <Col md={3} className='no-padding'>
-            <Houston />
-          </Col>
-        </Row>
-      </Container>
+      {remainingLoad > 0 && <Loading loadingType={sketchMode ? "onlyBlur" : "block"} />}
+      {(sketchMode || remainingLoad <= 0) && (
+        <Container fluid>
+          <Row>
+            <Col md={9} className='charts'>
+              <Row>
+                <Col md={6}>
+                  <Card className='dark'>
+                    <Card.Body>
+                      <Card.Title className='torreTitle'>My {sketchMode && <code>{"{sketch}"}</code>} skills</Card.Title>
+                      <Card.Subtitle className='text-muted'>
+                        Let's see what skills user <code>{torreUsername}</code> already have
+                      </Card.Subtitle>
+                      <hr />
+                      <MySkills mySkills={mySkills} sketchMode={sketchMode} />
+                    </Card.Body>
+                  </Card>
+                  <Card className='dark'>
+                    <Card.Body>
+                      <Card.Title className='torreTitle'>Skills around me</Card.Title>
+                      <Card.Subtitle className='text-muted'>
+                        Let's see what skills the people around user <code>{torreUsername}</code> have
+                      </Card.Subtitle>
+                      <hr />
+                      <SkillsAroundMe SkillsAroundMe={peopleAroundMeSkills} addSkill={addSkill} />
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md={6}>
+                  <Card className='dark'>
+                    <Card.Body>
+                      <Card.Title className='torreTitle'>Opportunities</Card.Title>
+                      <Card.Subtitle className='text-muted'>Let's see what job opportunities are around</Card.Subtitle>
+                      <hr />
+                      <OpportunitiesReport opportunitiesReport={opportunitiesReport} sketchOpportunitiesReport={sketchOpportunitiesReport} />
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
+            </Col>
+            {/* TODO: Implement mobile view for chatbot */}
+            <Col sm={false} md={3} className='no-padding d-none d-sm-none d-md-block'>
+              <Houston />
+            </Col>
+          </Row>
+        </Container>
+      )}
     </div>
   );
 }
